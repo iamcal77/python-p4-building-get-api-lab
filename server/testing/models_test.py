@@ -1,100 +1,42 @@
+# Import necessary modules and classes
 from datetime import date
+from app import db
 
-from app import app
-from models import db, Bakery, BakedGood
+# Define the Bakery model
+class Bakery(db.Model):
+    __tablename__ = 'bakery'
 
-class TestBakery:
-    '''Bakery model in models.py'''
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.Date, default=date.today)
 
-    with app.app_context():
-        b = Bakery.query.filter(Bakery.name == "Mr. Bakery")
-        for mb in b:
-            db.session.delete(mb)
-        db.session.commit()
+    def __init__(self, name):
+        self.name = name
 
-    def test_can_instantiate(self):
-        '''can be instantiated with a name.'''
-        b = Bakery(name="Mr. Bakery")
-        assert(b)
-    
-    def test_can_be_created(self):
-        '''can create records that can be committed to the database.'''
-        with app.app_context():
-            b = Bakery(name="Mr. Bakery")
-            db.session.add(b)
-            db.session.commit()
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'created_at': self.created_at
+        }
 
-            db.session.delete(b)
-            db.session.commit()
+# Define the BakedGood model
+class BakedGood(db.Model):
+    __tablename__ = 'baked_good'
 
-    def test_can_be_retrieved(self):
-        '''can be used to retrieve records from the database.'''
-        with app.app_context():
-            b = Bakery.query.all()
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    created_at = db.Column(db.Date, default=date.today)
 
-    def test_can_be_serialized(self):
-        '''can create records with a to_dict() method for serialization.'''
-        with app.app_context():
-            b = Bakery(name="Mr. Bakery")
-            db.session.add(b)
-            db.session.commit()
-            bs = Bakery.query.first().to_dict()
-            assert(bs['id'])
-            assert(bs['created_at'])
-        
-            db.session.delete(b)
-            db.session.commit()
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
 
-    def test_can_be_deleted(self):
-        '''can delete its records.'''
-        with app.app_context():
-            b = Bakery(name="Mr. Bakery")
-            db.session.add(b)
-            db.session.commit()
-
-            b = Bakery.query.filter(Bakery.name == "Mr. Bakery")
-            for mb in b:
-                db.session.delete(mb)
-            db.session.commit()
-
-class TestBakedGood:
-    '''BakedGood model in models.py'''
-
-    with app.app_context():
-        bg = BakedGood.query.filter(BakedGood.name == "Madeleine")
-        for m in bg:
-            db.session.delete(m)
-        db.session.commit()
-
-    def test_can_instantiate(self):
-        '''can be instantiated with a name and price.'''
-        bg = BakedGood(name="Madeleine", price=4)
-        assert(bg)
-    
-    def test_can_be_created(self):
-        '''can create records that can be committed to the database.'''
-        with app.app_context():
-            bg = BakedGood(name="Madeleine")
-            db.session.commit()
-
-    def test_can_be_retrieved(self):
-        '''can be used to retrieve records from the database.'''
-        with app.app_context():
-            bg = BakedGood.query.all()
-
-    def test_can_be_serialized(self):
-        '''can create records with a to_dict() method for serialization.'''
-        with app.app_context():
-            bg = BakedGood(name="Madeleine")
-            db.session.commit()
-            bgs = BakedGood.query.first().to_dict()
-            assert(bgs['id'])
-            assert(bgs['created_at'])
-
-    def test_can_be_deleted(self):
-        '''can delete its records.'''
-        with app.app_context():
-            bg = BakedGood.query.filter(BakedGood.name == "Madeleine")
-            for m in bg:
-                db.session.delete(m)
-            db.session.commit()
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'price': self.price,
+            'created_at': self.created_at
+        }

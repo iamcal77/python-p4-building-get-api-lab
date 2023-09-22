@@ -2,6 +2,7 @@ import json
 from os import environ
 import re
 
+
 from app import app
 from models import db, Bakery, BakedGood
 

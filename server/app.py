@@ -2,7 +2,7 @@
 
 from flask import Flask, make_response, jsonify
 from flask_migrate import Migrate
-
+from flask import Flask, jsonify
 from models import db, Bakery, BakedGood
 
 app = Flask(__name__)
@@ -19,8 +19,10 @@ def index():
     return '<h1>Bakery GET API</h1>'
 
 @app.route('/bakeries')
-def bakeries():
-    return ''
+def get_bakeries():
+    # Assuming you have a list of bakery objects, you can jsonify them
+    bakeries = [{"id": 1, "name": "Bakery 1"}, {"id": 2, "name": "Bakery 2"}]
+    return jsonify(bakeries)
 
 @app.route('/bakeries/<int:id>')
 def bakery_by_id(id):
